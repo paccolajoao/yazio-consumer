@@ -138,7 +138,7 @@ yazio-consumer/
     *   Click **Export Data**.
     *   Wait for the "Success" message.
 
-### � How to use the Data
+### 📈 How to use the Data
 The app creates CSV files that are perfect for **Excel** or **Google Sheets**:
 *   **drag & drop** the `.csv` files into Excel.
 *   Use them to create **Pivot Tables**, **Charts**, or track specific macro trends over time.
