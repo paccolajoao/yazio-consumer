@@ -16,7 +16,9 @@ Bypasses the limitations of standard exports by communicating directly with the 
 
 ### 🔐 Dual Authentication
 *   **Standard Login**: Use your Yazio email and password.
-*   **Google Login**: Seamlessly authenticates via Google OAuth (Local Server flow), securing your session without sharing passwords directly.
+*   **Google Login** (Experimental): Seamlessly authenticates via Google OAuth (Local Server flow).
+    > [!WARNING]
+    > **Current Limitation**: Authenticating directly via Google Credentials is currently restricted by the Yazio API. While the app supports the OAuth flow, the final exchange for a session token may fail or be rejected by Yazio's servers. **We recommend using Standard Email/Password login for reliability.**
 
 ### ⚡ Smart Data Engine
 *   **Parallel Fetching**: Uses multi-threading to download daily logs concurrently, significantly speeding up the process.
