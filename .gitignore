@@ -1,0 +1,47 @@
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv/
+.env
+
+# Yazio Exporter Specific
+google/credentials.json
+google/token.json
+token.json
+credentials.json
+dados/
+output/
+legacy/
+
+# IDE
+.idea/
+.vscode/
+
+# Logs
+*.log
