@@ -40,23 +40,23 @@ This project is engineered for longevity using **Clean Architecture**.
 ```mermaid
 graph TD
     subgraph "Presentation (UI)"
-        UI[Tkinter Window]
+        UI["Tkinter Window"]
     end
 
     subgraph "Application"
-        Login[Login Use Case]
-        Export[Export Use Case]
+        Login["Login Use Case"]
+        Export["Export Use Case"]
     end
 
     subgraph "Domain (Core)"
-        Models[Entities: DayLog, Product]
-        Interfaces[Interfaces: IYazioClient]
+        Models["Entities: DayLog, Product"]
+        Interfaces["Interfaces: IYazioClient"]
     end
 
     subgraph "Infrastructure"
-        API[Yazio Client (API)]
-        Auth[Google OAuth Service]
-        CSV[CSV Exporter]
+        API["Yazio Client (API)"]
+        Auth["Google OAuth Service"]
+        CSV["CSV Exporter"]
     end
 
     UI --> |Injects| Login
