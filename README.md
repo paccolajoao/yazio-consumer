@@ -101,24 +101,49 @@ yazio-consumer/
     ```bash
     python -m venv venv
     # Windows
-    .\venv\Scripts\activate
-    # Linux/Mac
-    source venv/bin/activate
-    ```
+### Installation (For Everyone)
 
-3.  **Install Dependencies**:
+**Option A: I know Git (Developers)**
+1.  Clone repo: `git clone https://github.com/paccolajoao/yazio-consumer.git`
+2.  Setup venv & install: `pip install -r requirements.txt`
+
+**Option B: I just want to run it (Simpler)**
+1.  **Download**: Click the green **Code** button above -> **Download ZIP**.
+2.  **Unzip**: Extract the folder to your computer (e.g., Documents).
+3.  **Open Terminal**:
+    *   **Windows**: Open the folder, type `cmd` in the address bar, and hit Enter.
+    *   **Mac/Linux**: Right-click folder -> "Open in Terminal".
+4.  **Install**:
     ```bash
     pip install -r requirements.txt
     ```
 
-4.  **Run the App**:
+---
+
+## 🎮 Usage
+
+1.  **Run the App**:
+    In the terminal, type:
     ```bash
     python main.py
     ```
+    *A window should appear.*
 
----
+2.  **Authentication**:
+    *   **Email/Password**: Enter your Yazio login details.
+    *   **Google**: Click "Connect with Google" (See warning below).
 
-## 💡 Troubleshooting
+3.  **Export Data**:
+    *   Choose where to save the files (e.g., Desktop).
+    *   Click **Export Data**.
+    *   Wait for the "Success" message.
+
+### � How to use the Data
+The app creates CSV files that are perfect for **Excel** or **Google Sheets**:
+*   **drag & drop** the `.csv` files into Excel.
+*   Use them to create **Pivot Tables**, **Charts**, or track specific macro trends over time.
+*   **nutrition_log.csv** is best for deep pivots (filtering by Meal or Product).
+*   **daily_summary.csv** is best for simple line charts of your calories.
 
 ### "Unknown Product" or Zero Calories?
 This usually happens if the API returns a concise reference instead of the full object.
