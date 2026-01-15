@@ -1,98 +1,101 @@
 
-# Yazio Exporter (Clean Architecture Edition)
+# 🥑 Yazio Consumer (Clean Architecture)
 
-A robust, Clean Architecture-based desktop application for exporting your nutritional data from Yazio to CSV format. This tool supports both standard email/password login and Google Authentication, allowing you to bypass limitations of other exporters and analyze your nutrition data in detail.
+![Python](https://img.shields.io/badge/Python-3.9%2B-blue?style=for-the-badge&logo=python&logoColor=white)
+![Tkinter](https://img.shields.io/badge/GUI-Tkinter-green?style=for-the-badge)
+![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Stable-success?style=for-the-badge)
 
-## 🌟 Key Features
+A powerful, privacy-focused desktop application to export your nutritional data from Yazio. Built with **Clean Architecture** principles, it ensures reliability, maintainability, and data accuracy.
 
-*   **Clean Architecture**: Built with separation of concerns (Domain, Application, Infrastructure, UI).
-*   **Dual Authentication**:
-    *   **Password**: Login with your Yazio email and password.
-    *   **Google Auth**: Uses local server OAuth flow to obtain tokens securely.
-*   **Smart Data Fetching**:
-    *   **Parallel Processing**: Fetches days concurrently for speed.
-    *   **Two-Pass Logic**: First gathers consumption data, then bulk-fetches full product details to ensure 100% data accuracy (correct names, nutrients).
-    *   **Resilient**: Handles missing data, timeouts, and API quirks gracefully.
-*   **Comprehensive Exports**:
-    *   `nutrition_log.csv`: Detailed log of every item consumed, with precise nutrients.
-    *   `meal_summary.csv`: Aggregated calories per meal slot (Breakfast, Lunch, Dinner, Snacks).
-    *   `daily_summary.csv`: Daily totals for Calories, Protein, Fat, and Carbs.
-*   **Dotenv Support**: easy configuration via `.env` file or UI.
+Bypasses the limitations of standard exports by communicating directly with the Yazio API to retrieve granular data including **calories, macro-nutrients, and accurate product names**.
+
+---
+
+## ✨ Features
+
+### 🔐 Dual Authentication
+*   **Standard Login**: Use your Yazio email and password.
+*   **Google Login**: Seamlessly authenticates via Google OAuth (Local Server flow), securing your session without sharing passwords directly.
+
+### ⚡ Smart Data Engine
+*   **Parallel Fetching**: Uses multi-threading to download daily logs concurrently, significantly speeding up the process.
+*   **Deep Hydration (Two-Pass)**:
+    1.  **Scan**: Rapidly scans your meal history to identify consumed items.
+    2.  **Hydrate**: Batch-fetches full product details from the API to guarantee 100% accuracy on nutrient values and product names (resolving "Unknown Product" issues).
+*   **Resilience**: Automatically handles API timeouts, rate limits, and missing data chunks.
+
+### 📊 Comprehensive Exports
+Generates three detailed CSV files in your chosen output folder:
+1.  **`nutrition_log.csv`**: Granular log of every single item consumed (Date, Meal Slot, Product, Grams, Calories, Macros).
+2.  **`meal_summary.csv`**: Aggregated totals per meal (Breakfast, Lunch, Dinner, Snacks).
+3.  **`daily_summary.csv`**: Daily totals for Calories, Protein, Fat, and Carbohydrates.
 
 ---
 
 ## 🏗️ Architecture
 
-This project follows **Clean Architecture** principles to ensure maintainability, testability, and scalability.
+This project is engineered for longevity using **Clean Architecture**.
 
 ```mermaid
 graph TD
-    subgraph "Presentation Layer"
-        UI[Tkinter UI (main_window.py)]
+    subgraph "Presentation (UI)"
+        UI[Tkinter Window]
     end
 
-    subgraph "Application Layer"
-        Login[LoginUseCase]
-        Export[ExportDataUseCase]
+    subgraph "Application"
+        Login[Login Use Case]
+        Export[Export Use Case]
     end
 
-    subgraph "Domain Layer"
-        Models[Models (DayLog, Product, AuthToken)]
-        Interfaces[Interfaces (IYazioClient, IExporter)]
+    subgraph "Domain (Core)"
+        Models[Entities: DayLog, Product]
+        Interfaces[Interfaces: IYazioClient]
     end
 
-    subgraph "Infrastructure Layer"
-        API[YazioClient (API wrapper)]
-        Auth[AuthService]
-        Google[GoogleOAuthService]
-        CSV[CsvExporter]
+    subgraph "Infrastructure"
+        API[Yazio Client (API)]
+        Auth[Google OAuth Service]
+        CSV[CSV Exporter]
     end
 
-    %% Dependencies (Arrows point inward/downward)
-    UI --> Login
-    UI --> Export
-
-    Login --> Auth
-    Login --> Google
-    Export --> API
-    Export --> CSV
-
-    API -- implements --> Interfaces
-    CSV -- implements --> Interfaces
-    Auth -- uses --> API
-
-    Login -- uses --> Models
-    Export -- uses --> Models
-    API -- returns --> Models
+    UI --> |Injects| Login
+    UI --> |Injects| Export
+    Login --> |Uses| Auth
+    Export --> |Uses| API
+    Export --> |Uses| CSV
+    API -- Implements --> Interfaces
 ```
 
-### Layers Description
-1.  **Domain (`domain/`)**: The heart of the application. Contains **Entities** (`DayLog`, `Product`) and **Interfaces** (`IYazioClient`, `IExporter`). It has *no external dependencies*.
-2.  **Application (`application/`)**: Contains **Use Cases** (`LoginUseCase`, `ExportDataUseCase`). These orchestrate business logic by calling interfaces. They know *what* to do, but not *how* external tools work.
-3.  **Infrastructure (`infrastructure/`)**: The implementation details.
-    *   `api/yazio_client.py`: Implements `IYazioClient`. Calls Yazio API using `requests`.
-    *   `services/google_oauth_service.py`: Handles Google Local OAuth flow.
-    *   `exporters/csv_exporter.py`: Implements `IExporter`. Writes CSV files.
-4.  **Presentation (`ui/`)**: The user interface. Uses Tkinter to display data and capture user input. It injects dependencies into the Application layer.
-5.  **Main (`main.py`)**: The **Composition Root**. It wires everything together.
+### directory structure
+```text
+yazio-consumer/
+├── application/         # Pure Business Logic (Use Cases)
+├── domain/              # core Entities & Interfaces (No dependencies)
+├── infrastructure/      # External adaptations (API, File System, Auth)
+├── ui/                  # Presentation Layer (Tkinter)
+├── google/              # Credentials storage (Ignored by Git)
+├── main.py              # Composition Root (Dependency Injection)
+└── requirements.txt     # Dependencies
+```
 
 ---
 
-## 🚀 Installation
+## 🚀 Getting Started
 
 ### Prerequisites
-*   Python 3.9+ installed.
-*   A Google Cloud Project credentials file (`credentials.json`) if you plan to use Google Login (place it in `google/credentials.json`).
+*   **Python 3.9** or higher.
+*   *(Optional)* **Google Credentials** (`credentials.json`) if using Google Login.
 
-### Steps
+### Installation
 
 1.  **Clone the repository**:
     ```bash
-    git clone https://github.com/yourusername/yazio-exporter.git
-    cd yazio-exporter
+    git clone https://github.com/paccolajoao/yazio-consumer.git
+    cd yazio-consumer
     ```
 
-2.  **Create a Virtual Environment** (Recommended):
+2.  **Create a Virtual Environment**:
     ```bash
     python -m venv venv
     # Windows
@@ -106,58 +109,34 @@ graph TD
     pip install -r requirements.txt
     ```
 
-4.  **Setup Google Credentials (Optional)**:
-    *   Create a project in [Google Cloud Console](https://console.cloud.google.com/).
-    *   Enable **Desktop App** OAuth client.
-    *   Download `client_secret_....json` and rename it to `credentials.json`.
-    *   Place it inside a `google/` folder in the project root.
-
----
-
-## 🎮 Usage
-
-1.  **Run the Application**:
+4.  **Run the App**:
     ```bash
     python main.py
     ```
 
-2.  **Authentication**:
-    *   **Email/Password**: Enter your Yazio credentials securely.
-    *   **Google**: Click "Connect with Google". A browser window will open to authorize the app. Once connected, your token is securely exchanged for a Yazio session.
+---
 
-3.  **Export Data**:
-    *   Select an **Output Folder**.
-    *   Click **Export Data**.
-    *   The app will fetch the last 60 days of data and generate CSV files in the selected folder.
+## 💡 Troubleshooting
+
+### "Unknown Product" or Zero Calories?
+This usually happens if the API returns a concise reference instead of the full object.
+*   **Fix**: The app now uses a **Two-Pass** strategy. It will automatically detect missing info and fetch the specific product details from the Yazio V9 API. Just run the export again.
+
+### Google Login not working?
+*   Ensure you have a valid `google/credentials.json` file from the Google Cloud Console (Desktop App type).
+*   If the app opens a browser but doesn't login, check the console logs for URL redirection issues.
+*   **Note**: The app no longer auto-opens the browser on startup; you must click "Connect with Google".
 
 ---
 
-## 📂 Project Structure
+## 🤝 Contributing
 
-```
-yazio-exporter/
-├── application/         # Business Logic (Use Cases)
-├── dados/               # Default output folder (ignored by git)
-├── domain/              # Entities & Interfaces (Pure Python)
-├── google/              # Google Credentials (ignored by git)
-├── infrastructure/      # API, DB, File implementations
-├── legacy/              # Old scripts (reference only)
-├── ui/                  # Tkinter User Interface
-├── .env                 # Config file (auto-generated)
-├── .gitignore           # Git ignore rules
-├── main.py              # Entry point
-├── README.md            # You are here
-└── requirements.txt     # Python dependencies
-```
-
-## 🛠️ Development
-
-To modify the project:
-1.  Add new business logic in `application/`.
-2.  Define new interfaces in `domain/`.
-3.  Implement them in `infrastructure/`.
-4.  Update `ui/` to expose the new features.
+1.  Fork the project.
+2.  Create your Feature Branch (`git checkout -b feature/AmazingFeature`).
+3.  Commit your changes (`git commit -m 'Add some AmazingFeature'`).
+4.  Push to the Branch (`git push origin feature/AmazingFeature`).
+5.  Open a Pull Request.
 
 ---
 
-**Note**: This tool uses the private API of Yazio and is for personal use only.
+**Disclaimer**: This is a third-party tool and is not affiliated with Yazio. Use responsibly.
